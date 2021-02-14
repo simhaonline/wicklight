@@ -1,0 +1,33 @@
+listen = "0.0.0.0:8132"
+
+[log]
+level = 1 # 1 = debug 2 = info 3 = warn
+file = "" # logging file
+
+[tls]
+certificate = "build/localhost+2.pem"
+privatekey = "build/localhost+2-key.pem"
+
+[pac]
+url="/pac"
+file="build/pac"
+
+[fallback]
+target = "http://127.0.0.1"
+host = "pr.example.org"
+whitelist = ["github.com"]
+
+[[users]]
+username = "user1"
+password = "password"
+
+[[users]]
+username = "user2"
+password = "password"
+
+
+[acl]
+DefaultAllow = true
+AllowLocal = false
+DenyPorts = [53,5353]
+AllowPorts = [80,443,8443]

@@ -1,0 +1,13 @@
+[Unit]
+Description=wicklight
+After=network.target network-online.target
+
+[Service]
+Type=simple
+LimitNOFILE=102400
+ExecStart=/usr/local/bin/wicklight  /usr/local/etc/wicklight/config.toml
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+.vscode
+.code
+**/.DS_Store
+build/*
+!build/.gitkeep
