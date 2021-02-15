@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"wicklight/config"
 	"wicklight/logger"
+	"wicklight/quota"
 	"wicklight/transport"
 )
 
@@ -22,6 +23,7 @@ type request struct {
 
 	authenticated bool
 	allowed       bool
+	notexceeded   bool
 
 	err error
 }
@@ -31,15 +33,20 @@ func (s *server) ServeHTTP(w http.ResponseWriter, hr *http.Request) {
 	req.host, req.port = checkHost(hr)
 	req.user, req.authenticated = checkUser(hr)
 	req.allowed = checkACL(req)
+	req.notexceeded = quota.CheckQuota(req.user)
 
-	logger.Debugf("[proxy] %v to %v %v:%v authenticated: %v, allowd: %v", req.user, hr.Method, req.host, req.port, req.authenticated, req.allowed)
+	if req.authenticated && req.allowed && req.notexceeded {
+		logger.Debugf("[proxy] %v(%v) to %v %v:%v authenticated: %v, allowd: %v, not restricted: %v", req.user, quota.PrintQuota(req.user), hr.Method, req.host, req.port, req.authenticated, req.allowed, req.notexceeded)
+	} else {
+		logger.Warnf("[proxy] %v(%v) to %v %v:%v authenticated: %v, allowd: %v, not restricted: %v", req.user, quota.PrintQuota(req.user), hr.Method, req.host, req.port, req.authenticated, req.allowed, req.notexceeded)
+	}
 
 	if req.host == config.Conf.Fallback.Host {
 		handlePanel(w, hr, req)
 		return
 	}
 
-	if !req.authenticated || !req.allowed {
+	if !req.authenticated || !req.allowed || !req.notexceeded {
 		if req.authenticated || isHostInWhiteList(req.host) {
 			handlePanel(w, hr, req)
 			return
@@ -107,10 +114,12 @@ func handleProxyConnect(w http.ResponseWriter, r *http.Request, req *request) {
 			}
 			outbound.Write(rbuf)
 		}
-		transport.Relay(outbound, client, client)
+		usage := transport.Relay(outbound, client, client)
+		quota.UpdateQuota(req.user, usage)
 	default:
 		defer r.Body.Close()
-		transport.Relay(outbound, r.Body, w)
+		usage := transport.Relay(outbound, r.Body, w)
+		quota.UpdateQuota(req.user, usage)
 	}
 }
 

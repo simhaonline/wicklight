@@ -22,7 +22,9 @@ type closeWriter interface {
 
 // Relay double side copy
 func Relay(target net.Conn, clientReader io.ReadCloser, clientWriter io.Writer) int64 {
-	stream := func(w io.Writer, r io.Reader) int64 {
+	var u1, u2 int64
+
+	stream := func(w io.Writer, r io.Reader, usage *int64) int64 {
 		// copy bytes from r to w
 		buf := BufferPool.Get().([]byte)
 		buf = buf[0:cap(buf)]
@@ -31,11 +33,13 @@ func Relay(target net.Conn, clientReader io.ReadCloser, clientWriter io.Writer) 
 		if cw, ok := w.(closeWriter); ok {
 			cw.CloseWrite()
 		}
+		*usage = n
 		return n
 	}
 
-	go stream(target, clientReader)
-	return stream(clientWriter, target)
+	go stream(target, clientReader, &u1)
+	stream(clientWriter, target, &u2)
+	return u1 + u2
 }
 
 func flushingIoCopy(dst io.Writer, src io.Reader, buf []byte) (written int64, err error) {

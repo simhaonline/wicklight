@@ -27,7 +27,7 @@ type UserConfig struct {
 	Username string
 	Password string
 	// Admin    bool
-	// Quota    int64
+	Quota int64
 }
 
 // FallbackConfig is prototype for fallback
@@ -54,6 +54,7 @@ type ACLConfig struct {
 
 // LogConfig is prototype for logger
 type LogConfig struct {
-	Level logger.LogLevel
-	File  string
+	Level     logger.LogLevel
+	File      string
+	QuotaFile string
 }

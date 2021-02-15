@@ -9,6 +9,7 @@ import (
 	"time"
 	"wicklight/config"
 	"wicklight/logger"
+	"wicklight/quota"
 	"wicklight/version"
 )
 
@@ -45,6 +46,9 @@ func handlePanel(w http.ResponseWriter, r *http.Request, req request) {
 	} else if !req.allowed {
 		code = http.StatusForbidden
 		msg = "not allowed to visit"
+	} else if !req.notexceeded {
+		code = http.StatusForbidden
+		msg = "exceeded quota"
 	} else if req.err != nil && req.err == errGateway {
 		code = http.StatusBadGateway
 		msg = "can not connect to the next hop"
@@ -53,7 +57,7 @@ func handlePanel(w http.ResponseWriter, r *http.Request, req request) {
 		code = http.StatusInternalServerError
 		msg = req.err.Error()
 	} else {
-		msg = fmt.Sprintf("User [%v], welcome to wicklight", req.user)
+		msg = fmt.Sprintf("User [%v(%v)], welcome to wicklight", req.user, quota.PrintQuota(req.user))
 	}
 
 	text := http.StatusText(code)
