@@ -21,10 +21,10 @@ if [[ $(uname -m 2> /dev/null) != x86_64 ]]; then
     exit 1
 fi
 
-NAME=wicktrojan
-VERSION=$(curl -fsSL https://api.github.com/repos/wickproxy/wicktrojan/releases/latest | grep tag_name | sed -E 's/.*"(.*)".*/\1/' )
-FILENAME="wicktrojan-linux-amd64"
-DOWNLOADURL="https://github.com/wickproxy/wicktrojan/releases/download/$VERSION/$FILENAME"
+NAME=wicklight
+VERSION=$(curl -fsSL https://api.github.com/repos/wickproxy/wicklight/releases/latest | grep tag_name | sed -E 's/.*"(.*)".*/\1/' )
+FILENAME="wicklight-linux-amd64"
+DOWNLOADURL="https://github.com/wickproxy/wicklight/releases/download/$VERSION/$FILENAME"
 TMPDIR="$(mktemp -d)"
 
 INSTALLPREFIX=/usr/local
@@ -47,7 +47,7 @@ install -Dm755 "$NAME" "$BINARYPATH"
 
 echo Installing $NAME server config to $CONFIGPATH...
 if ! [[ -f "$CONFIGPATH" ]] || prompt "The server config already exists in $CONFIGPATH, overwrite?"; then
-    curl -LO --progress-bar "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/config.toml" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/config.toml"
+    curl -LO --progress-bar "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/config.toml" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/config.toml"
     install -Dm644 config.toml "$CONFIGPATH"
 else
     echo Skipping installing $NAME server config...
@@ -56,8 +56,8 @@ fi
 if [[ -d "$SYSTEMDPREFIX" ]]; then
     echo Installing $NAME systemd service to $SYSTEMDPATH...
     if ! [[ -f "$SYSTEMDPATH" ]] || prompt "The systemd service already exists in $SYSTEMDPATH, overwrite?"; then
-        curl -LO --progress-bar "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/wicktrojan.service" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/wicktrojan.service"
-        install -Dm644 wicktrojan.service "$SYSTEMDPATH"
+        curl -LO --progress-bar "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/wicklight.service" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/wicklight.service"
+        install -Dm644 wicklight.service "$SYSTEMDPATH"
         echo Reloading systemd daemon...
         systemctl daemon-reload
     else
@@ -66,8 +66,8 @@ if [[ -d "$SYSTEMDPREFIX" ]]; then
 
     echo Installing $NAME systemd service template to $SYSTEMDPATHTPL...
     if ! [[ -f "$SYSTEMDPATHTPL" ]] || prompt "The systemd service template already exists in $SYSTEMDPATH, overwrite?"; then
-        curl -L -o wicktrojan@.service --progress-bar "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/wicktrojan%40.service" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicktrojan/$VERSION/example/wicktrojan%40.service"
-        install -Dm644 wicktrojan@.service "$SYSTEMDPATHTPL"  || install -Dm644 wicktrojan%40.service "$SYSTEMDPATHTPL"
+        curl -L -o wicklight@.service --progress-bar "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/wicklight%40.service" || wget -q --show-progress "https://raw.githubusercontent.com/wickproxy/wicklight/$VERSION/example/wicklight%40.service"
+        install -Dm644 wicklight@.service "$SYSTEMDPATHTPL"  || install -Dm644 wicklight%40.service "$SYSTEMDPATHTPL"
         echo Reloading systemd daemon...
         systemctl daemon-reload
     else
