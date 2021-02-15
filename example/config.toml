@@ -5,6 +5,7 @@ listen = "0.0.0.0:6666"
 # log level 1 = debug 2 = info 7 = slient
 level = 1
 file = ""
+quotafile = "/usr/local/etc/wicklight/usage.txt"
 
 [tls]
 # certificate and private key file
@@ -12,8 +13,8 @@ certificate = ""
 privatekey = ""
 
 [fallback]
-# fallback url
-target = "http://127.0.0.1"
+# fallback url, backend http server or apple.com et.al
+target = "http://127.0.0.1:80"
 # probe-host
 host = "pr.example.org"
 # white list
