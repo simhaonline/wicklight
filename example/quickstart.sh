@@ -3,7 +3,7 @@ set -euo pipefail
 
 function prompt() {
     while true; do
-        read -p "$1 [y/N] " yn
+        read -p "$1 [y/N] "
         case $yn in
             [Yy] ) return 0;;
             [Nn]|"" ) return 1;;
