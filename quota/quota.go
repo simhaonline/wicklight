@@ -26,7 +26,7 @@ func InitQuota() {
 	for _, u := range config.Conf.Users {
 		if u.Quota != 0 {
 			cache[u.Username] = 0
-			quota[u.Username] = u.Quota * mb
+			quota[u.Username] = u.Quota * gb
 		}
 	}
 
