@@ -4,7 +4,7 @@ else
 	builddate = $(shell date +"%Y-%m-%d %H:%M:%S")
 endif
 
-Version = 0.0.4
+Version = 0.0.5
 ldflags = -X 'wicklight/version.Version=$(Version)' -X 'wicklight/version.BuildTime=$(builddate)'
 
 build:
