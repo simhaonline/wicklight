@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"wicklight/config"
+	"wicklight/logger"
 )
 
 func checkHost(hr *http.Request) (host, port string) {
@@ -75,7 +76,7 @@ func parseBasicAuth(auth string) (username, password string, ok bool) {
 func checkACL(req request) (passed bool) {
 	portAllowed := !config.Conf.ACL.WhiteListMode
 	hostAllowed := !config.Conf.ACL.WhiteListMode
-
+	logger.Debug(portAllowed, hostAllowed, req)
 	var ip net.IP
 	reqAddr, _ := net.ResolveIPAddr("ip", req.host)
 	if reqAddr != nil {
@@ -83,7 +84,7 @@ func checkACL(req request) (passed bool) {
 	}
 
 	for _, rulePort := range config.Conf.ACL.PortsList {
-		if rulePort == req.port && config.Conf.ACL.WhiteListMode {
+		if rulePort == req.port {
 			portAllowed = !portAllowed
 			break
 		}

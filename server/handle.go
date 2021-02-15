@@ -67,6 +67,9 @@ func handleProxyConnect(w http.ResponseWriter, r *http.Request, req *request) {
 		return
 	}
 
+	w.WriteHeader(200)
+	wFlusher.Flush()
+
 	hostPort := net.JoinHostPort(req.host, req.port)
 
 	outbound, err := net.Dial("tcp", hostPort)
@@ -77,9 +80,6 @@ func handleProxyConnect(w http.ResponseWriter, r *http.Request, req *request) {
 		return
 	}
 	defer outbound.Close()
-
-	w.WriteHeader(200)
-	wFlusher.Flush()
 
 	switch r.ProtoMajor {
 	case 1:
