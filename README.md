@@ -31,11 +31,11 @@ It is easy to use Wickproxy as the frontend server listening on port 443 or 80. 
 
 via curl
 ```
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/wickproxy/wicklight/main/example/quickstart.sh)"
+sudo bash -c "$(curl -fsSL https://git.io/Jtycg)"
 ```
 via wget
 ```
-sudo bash -c "$(wget -O- https://raw.githubusercontent.com/wickproxy/wicklight/main/example/quickstart.sh)"
+sudo bash -c "$(wget -O- https://git.io/Jtycg)"
 ```
 <!--
 https://raw.githubusercontent.com/wickproxy/wicktroja/main/example/install.sh
